@@ -24,8 +24,8 @@ dotnet run --project StockApi.Api
 
 Hit `http://localhost:5168` or check out Swagger at `http://localhost:5168/swagger`
 Here are some examples I was using when running:
-http://localhost:5168/api/v1/stock/AAPL?days=30
-http://localhost:5168/api/v1/stock/MSFT?days=15
+http://localhost:5168/api/v1/stock/AAPL?days=30 //
+http://localhost:5168/api/v1/stock/MSFT?days=15 //
 http://localhost:5168/api/v1/stock/TSLA?days=7
 
 ## Testing
