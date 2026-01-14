@@ -26,7 +26,9 @@ Hit `http://localhost:5168` or check out Swagger at `http://localhost:5168/swagg
 Here are some examples I was using when running:
 http://localhost:5168/api/v1/stock/AAPL?days=30 //
 http://localhost:5168/api/v1/stock/MSFT?days=15 //
-http://localhost:5168/api/v1/stock/TSLA?days=7
+http://localhost:5168/api/v1/stock/TSLA?days=7 //
+http://localhost:5168/api/v1/stock/RIVN?days=5 //
+http://localhost:5168/api/v1/stock/NVDA?days=12
 
 ## Testing
 ```bash
