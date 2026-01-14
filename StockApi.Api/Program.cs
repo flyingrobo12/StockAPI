@@ -1,44 +1,61 @@
+using StockApi.Api.Middleware;
+using StockApi.Core.Interfaces;
+using StockApi.Infrastructure.Configuration;
+using StockApi.Infrastructure.Providers;
+using StockApi.Infrastructure.Services;
+using Serilog;
+using StockApi.Core.Inerfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).WriteTo.Console().CreateLogger();
+
+builder.Host.UseSerilog();
+//adding in services
+builder.Services.AddControllers();
+builder.Services.AddMemoryCache();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new()
+    {
+        Title = "Stock API",
+        Version = "v1",
+        Description = "API for retrieving aggregated stock market data"
+    });
+});
+
+//config yahoo options
+builder.Services.Configure<YahooFinanceOptions>(builder.Configuration.GetSection(YahooFinanceOptions.SectionName));
+//register services with DI
+builder.Services.AddHttpClient<IStockDataProvider, YahooFinanceProvider>();
+builder.Services.AddScoped<IStockDataService, StockDataService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//middleware pipeline
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
+app.MapControllers();
 
-var summaries = new[]
+try
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
+    Log.Information("Starting Stock API");
+    app.Run();
+}
+catch (Exception ex)
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
-app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    Log.CloseAndFlush();
 }
