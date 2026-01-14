@@ -1,7 +1,7 @@
 using StockApi.Core.Interfaces;
 using StockApi.Core.Models;
 using Microsoft.Extensions.Logging;
-using StockApi.Core.Inerfaces;
+
 
 namespace StockApi.Infrastructure.Services;
 

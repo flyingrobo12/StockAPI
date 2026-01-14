@@ -1,6 +1,6 @@
 using StockApi.Core.Models;
 
-namespace StockApi.Core.Inerfaces;
+namespace StockApi.Core.Interfaces;
 
 public interface IStockDataService
 {

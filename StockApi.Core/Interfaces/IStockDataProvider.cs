@@ -13,8 +13,8 @@ public interface IStockDataProvider
 
 public class RawStockData
 {
-    public List<long> Timestamps { get; set; }
-    public List<decimal?> Lows { get; set; }
-    public List<decimal?> Highs { get; set; }
-    public List<long?> Volumes { get; set; }
+    public List<long> Timestamps { get; set; } = null!;
+    public List<decimal?> Lows { get; set; } = null!;
+    public List<decimal?> Highs { get; set; } = null!;
+    public List<long?> Volumes { get; set; } = null!;
 }

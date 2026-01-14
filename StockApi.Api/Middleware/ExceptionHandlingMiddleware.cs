@@ -9,7 +9,9 @@ public class ExceptionHandlingMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
-    public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+    public ExceptionHandlingMiddleware(
+        RequestDelegate next,
+        ILogger<ExceptionHandlingMiddleware> logger)
     {
         _next = next;
         _logger = logger;
@@ -29,14 +31,13 @@ public class ExceptionHandlingMiddleware
 
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        _logger.LogError(exception, "Unhandled exception occured");
+        _logger.LogError(exception, "Unhandled exception occurred");
 
         var (statusCode, message) = exception switch
         {
             InvalidSymbolException => (HttpStatusCode.NotFound, exception.Message),
             ExternalServiceException => (HttpStatusCode.BadGateway, exception.Message),
-            _ => (HttpStatusCode.InternalServerError, "An unexpected error occured")
-
+            _ => (HttpStatusCode.InternalServerError, "An unexpected error occurred")
         };
 
         context.Response.ContentType = "application/json";
@@ -49,6 +50,5 @@ public class ExceptionHandlingMiddleware
         };
 
         await context.Response.WriteAsync(JsonSerializer.Serialize(response));
-        
     }
 }
